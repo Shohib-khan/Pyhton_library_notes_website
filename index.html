@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Data Science Mastery | NumPy • Pandas • Matplotlib • Seaborn</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+<base target="_blank">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <i data-lucide="crown" class="brand-icon"></i>
+            <span class="brand-text">Py<span class="gold">Royal</span></span>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#numpy" class="nav-link">NumPy</a>
+            <a href="#pandas" class="nav-link">Pandas</a>
+            <a href="#matplotlib" class="nav-link">Matplotlib</a>
+            <a href="#seaborn" class="nav-link">Seaborn</a>
+            <a href="#quizzes" class="nav-link">Quizzes</a>
+            <a href="#results" class="nav-link">Results</a>
+        </div>
+        <div class="nav-toggle" id="navToggle">
+            <i data-lucide="menu"></i>
+        </div>
+    </nav>
+
+    <!-- Hero Section with 3D Canvas -->
+    <section id="home" class="hero">
+        <canvas id="heroCanvas"></canvas>
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i data-lucide="sparkles" class="badge-icon"></i>
+                <span>Master Data Science from Zero</span>
+            </div>
+            <h1 class="hero-title">
+                Python Libraries<br>
+                <span class="gradient-text">Made Simple</span>
+            </h1>
+            <p class="hero-subtitle">
+                From absolute beginner to advanced data scientist. Interactive 3D visualizations, 
+                bite-sized lessons, and smart quizzes to track your journey.
+            </p>
+            <div class="hero-cta">
+                <a href="#numpy" class="btn btn-primary">
+                    <i data-lucide="rocket"></i>
+                    Start Learning
+                </a>
+                <a href="#quizzes" class="btn btn-outline">
+                    <i data-lucide="target"></i>
+                    Take a Quiz
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">Libraries</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Topics</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Quizzes</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse">
+                <div class="wheel"></div>
+            </div>
+            <span>Scroll to explore</span>
+        </div>
+    </section>
+
+    <!-- Progress Tracker -->
+    <div class="progress-tracker" id="progressTracker">
+        <div class="tracker-container">
+            <div class="tracker-item" data-lib="numpy">
+                <div class="tracker-ring">
+                    <svg viewBox="0 0 36 36">
+                        <path class="tracker-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        <path class="tracker-progress" id="progress-numpy" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    </svg>
+                    <i data-lucide="box"></i>
+                </div>
+                <span>NumPy</span>
+            </div>
+            <div class="tracker-item" data-lib="pandas">
+                <div class="tracker-ring">
+                    <svg viewBox="0 0 36 36">
+                        <path class="tracker-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        <path class="tracker-progress" id="progress-pandas" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    </svg>
+                    <i data-lucide="table"></i>
+                </div>
+                <span>Pandas</span>
+            </div>
+            <div class="tracker-item" data-lib="matplotlib">
+                <div class="tracker-ring">
+                    <svg viewBox="0 0 36 36">
+                        <path class="tracker-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        <path class="tracker-progress" id="progress-matplotlib" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    </svg>
+                    <i data-lucide="bar-chart-3"></i>
+                </div>
+                <span>Matplotlib</span>
+            </div>
+            <div class="tracker-item" data-lib="seaborn">
+                <div class="tracker-ring">
+                    <svg viewBox="0 0 36 36">
+                        <path class="tracker-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        <path class="tracker-progress" id="progress-seaborn" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                    </svg>
+                    <i data-lucide="palette"></i>
+                </div>
+                <span>Seaborn</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- NUMPY SECTION -->
+    <section id="numpy" class="library-section">
+        <div class="section-header">
+            <div class="section-icon numpy-icon">
+                <i data-lucide="box"></i>
+            </div>
+            <h2 class="section-title">NumPy</h2>
+            <p class="section-desc">The foundation of numerical computing in Python</p>
+        </div>
+
+        <div class="content-grid">
+            <!-- 3D Array Visualization -->
+            <div class="viz-card" id="numpyViz">
+                <div class="viz-header">
+                    <h3><i data-lucide="eye"></i> 3D Array Visualization</h3>
+                </div>
+                <div class="viz-canvas-container">
+                    <canvas id="numpy3DCanvas"></canvas>
+                    <div class="viz-controls">
+                        <button class="viz-btn active" data-dim="2">2D Array</button>
+                        <button class="viz-btn" data-dim="3">3D Array</button>
+                        <button class="viz-btn" data-dim="transform">Transform</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Topics -->
+            <div class="topics-container">
+                <div class="topic-card" data-topic="arrays">
+                    <div class="topic-front">
+                        <div class="topic-number">01</div>
+                        <h3>Creating Arrays</h3>
+                        <p>Learn to create arrays from lists, zeros, ones, and ranges</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code>import numpy as np
+
+# From list
+arr = np.array([1, 2, 3, 4, 5])
+
+# Zeros & Ones
+zeros = np.zeros((3, 3))
+ones = np.ones((2, 4))
+
+# Range
+range_arr = np.arange(0, 10, 2)
+
+# Linear space
+lin = np.linspace(0, 1, 5)</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Think of it like this:</strong> A NumPy array is like a super-powered Python list that can be 1D (line), 2D (table), or 3D (cube). <code>zeros()</code> creates an empty box, <code>ones()</code> fills it with 1s, and <code>arange()</code> counts by steps.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="indexing">
+                    <div class="topic-front">
+                        <div class="topic-number">02</div>
+                        <h3>Indexing & Slicing</h3>
+                        <p>Access and modify array elements like a pro</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code>arr = np.array([[1,2,3],[4,5,6],[7,8,9]])
+
+# Get element at row 1, col 2
+print(arr[1, 2])      # 6
+
+# Get entire row
+print(arr[0, :])      # [1 2 3]
+
+# Get entire column
+print(arr[:, 1])      # [2 5 8]
+
+# Boolean indexing
+print(arr[arr > 5])   # [6 7 8 9]</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Remember:</strong> Python uses 0-based indexing. <code>arr[row, col]</code> is your GPS coordinate. <code>:</code> means "everything in this dimension". Boolean indexing is like filtering with a magic mask!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="operations">
+                    <div class="topic-front">
+                        <div class="topic-number">03</div>
+                        <h3>Math Operations</h3>
+                        <p>Vectorized operations - no loops needed!</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code>a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+
+# Element-wise operations
+print(a + b)          # [5 7 9]
+print(a * b)          # [4 10 18]
+print(a ** 2)         # [1 4 9]
+
+# Universal functions
+print(np.sqrt(a))     # [1. 1.414 1.732]
+print(np.exp(a))      # [2.718 7.389 20.086]
+print(np.sin(a))      # Trigonometry!</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>The Magic:</strong> NumPy does math on entire arrays at once! No <code>for</code> loops needed. It's like having a calculator that works on entire columns of numbers simultaneously - 100x faster than Python loops.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="broadcasting">
+                    <div class="topic-front">
+                        <div class="topic-number">04</div>
+                        <h3>Broadcasting</h3>
+                        <p>How NumPy handles different shaped arrays</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code>matrix = np.array([[1, 2, 3],
+                   [4, 5, 6]])
+vector = np.array([10, 20, 30])
+
+# Broadcasting: vector stretches!
+result = matrix + vector
+# [[11, 22, 33],
+#  [14, 25, 36]]
+
+scalar = 5
+print(matrix * scalar)
+# [[5, 10, 15],
+#  [20, 25, 30]]</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Visualize:</strong> Broadcasting is like stretching a small rubber band to fit a bigger frame. NumPy automatically "stretches" smaller arrays to match bigger ones. Rules: dimensions must be equal or one must be 1.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="linalg">
+                    <div class="topic-front">
+                        <div class="topic-number">05</div>
+                        <h3>Linear Algebra</h3>
+                        <p>Matrices, dot products, and eigenvalues</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code>A = np.array([[1, 2], [3, 4]])
+B = np.array([[5, 6], [7, 8]])
+
+# Matrix multiplication
+print(np.dot(A, B))
+# OR
+print(A @ B)
+
+# Transpose
+print(A.T)
+
+# Inverse
+print(np.linalg.inv(A))
+
+# Determinant
+print(np.linalg.det(A))
+
+# Eigenvalues
+print(np.linalg.eigvals(A))</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Real World:</strong> Linear algebra powers AI, graphics, and physics simulations. <code>@</code> is the matrix multiplication operator. The inverse of a matrix is like "division" for matrices.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="random">
+                    <div class="topic-front">
+                        <div class="topic-number">06</div>
+                        <h3>Random Numbers</h3>
+                        <p>Generate random data for simulations</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Random floats 0-1
+rand = np.random.rand(3, 3)
+
+# Random integers
+randint = np.random.randint(1, 10, size=(2, 3))
+
+# Normal distribution (bell curve)
+normal = np.random.randn(1000)
+
+# Set seed for reproducibility
+np.random.seed(42)
+
+# Random choice
+choice = np.random.choice([1,2,3,4,5], size=3)</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Pro Tip:</strong> Always set a <code>seed</code> when sharing code! It ensures everyone gets the same "random" numbers. <code>randn()</code> gives you the famous bell curve used in statistics.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PANDAS SECTION -->
+    <section id="pandas" class="library-section alt-bg">
+        <div class="section-header">
+            <div class="section-icon pandas-icon">
+                <i data-lucide="table"></i>
+            </div>
+            <h2 class="section-title">Pandas</h2>
+            <p class="section-desc">Excel-like superpowers for Python data manipulation</p>
+        </div>
+
+        <div class="content-grid">
+            <div class="viz-card" id="pandasViz">
+                <div class="viz-header">
+                    <h3><i data-lucide="eye"></i> DataFrame 3D Structure</h3>
+                </div>
+                <div class="viz-canvas-container">
+                    <canvas id="pandas3DCanvas"></canvas>
+                    <div class="viz-controls">
+                        <button class="viz-btn active" data-action="structure">Structure</button>
+                        <button class="viz-btn" data-action="filter">Filter</button>
+                        <button class="viz-btn" data-action="group">GroupBy</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topics-container">
+                <div class="topic-card" data-topic="series">
+                    <div class="topic-front">
+                        <div class="topic-number">01</div>
+                        <h3>Series & DataFrames</h3>
+                        <p>The two core data structures in Pandas</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code>import pandas as pd
+
+# Series = 1D labeled array
+s = pd.Series([10, 20, 30], 
+              index=['a', 'b', 'c'])
+print(s['b'])  # 20
+
+# DataFrame = 2D table
+df = pd.DataFrame({
+    'Name': ['Alice', 'Bob', 'Charlie'],
+    'Age': [25, 30, 35],
+    'City': ['NYC', 'LA', 'Chicago']
+})
+print(df)</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Analogy:</strong> A Series is like a single column in Excel with row labels. A DataFrame is the entire Excel sheet - multiple columns with headers and row indices. The <code>index</code> is your row address.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="readwrite">
+                    <div class="topic-front">
+                        <div class="topic-number">02</div>
+                        <h3>Reading & Writing Data</h3>
+                        <p>Load CSV, Excel, SQL and save your results</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Read CSV
+df = pd.read_csv('data.csv')
+
+# Read Excel
+df = pd.read_excel('data.xlsx', 
+                   sheet_name='Sheet1')
+
+# Read from URL
+url = 'https://site.com/data.csv'
+df = pd.read_csv(url)
+
+# Save to CSV
+df.to_csv('output.csv', index=False)
+
+# First/Last rows
+print(df.head(5))
+print(df.tail(3))</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Workflow:</strong> <code>read_csv()</code> is your data front door. <code>head()</code> peeks at the top (like tasting soup), <code>tail()</code> checks the bottom. Always use <code>index=False</code> when saving to avoid duplicate index columns.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="filtering">
+                    <div class="topic-front">
+                        <div class="topic-number">03</div>
+                        <h3>Filtering & Selection</h3>
+                        <p>Find exactly the data you need</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Select columns
+names = df['Name']
+subset = df[['Name', 'Age']]
+
+# Filter rows
+adults = df[df['Age'] >= 18]
+
+# Multiple conditions
+mask = (df['Age'] > 25) & (df['City'] == 'NYC')
+result = df[mask]
+
+# loc vs iloc
+print(df.loc[0, 'Name'])    # By label
+print(df.iloc[0, 0])         # By position
+
+# isin
+print(df[df['City'].isin(['NYC', 'LA'])])</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Key Difference:</strong> <code>loc</code> uses names (labels), <code>iloc</code> uses numbers (positions). Think of <code>loc</code> as "location by name" and <code>iloc</code> as "integer location". Use <code>&</code> for AND, <code>|</code> for OR.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="missing">
+                    <div class="topic-front">
+                        <div class="topic-number">04</div>
+                        <h3>Handling Missing Data</h3>
+                        <p>Deal with NaN values like a data scientist</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Check missing values
+print(df.isnull().sum())
+
+# Drop rows with any NaN
+clean = df.dropna()
+
+# Drop columns with NaN
+df.dropna(axis=1, inplace=True)
+
+# Fill NaN with values
+df['Age'].fillna(df['Age'].mean(), 
+                 inplace=True)
+
+# Forward fill (use last valid value)
+df.fillna(method='ffill', inplace=True)</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Golden Rule:</strong> Never ignore missing data! <code>dropna()</code> removes them (loses info), <code>fillna()</code> replaces them. Filling with mean/median is common for numbers. Always check <code>isnull().sum()</code> first!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="groupby">
+                    <div class="topic-front">
+                        <div class="topic-number">05</div>
+                        <h3>GroupBy Operations</h3>
+                        <p>Split-Apply-Combine: The heart of data analysis</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Group by one column
+grouped = df.groupby('City')['Age'].mean()
+
+# Multiple aggregations
+result = df.groupby('City').agg({
+    'Age': ['mean', 'max', 'min'],
+    'Salary': 'sum'
+})
+
+# Group by multiple columns
+result = df.groupby(['City', 'Gender']).size()
+
+# Transform (keep original shape)
+df['avg_age'] = df.groupby('City')['Age'].transform('mean')</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Remember:</strong> GroupBy is like sorting your laundry by color, then doing something to each pile. <code>agg()</code> lets you do multiple calculations at once. <code>transform()</code> adds results back to original rows.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="merge">
+                    <div class="topic-front">
+                        <div class="topic-number">06</div>
+                        <h3>Merge & Join</h3>
+                        <p>Combine multiple datasets into one</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># SQL-style joins
+merged = pd.merge(df1, df2, 
+                  on='customer_id', 
+                  how='inner')
+
+# Left join (keep all from left)
+left = pd.merge(df1, df2, 
+                on='id', 
+                how='left')
+
+# Concatenate (stack tables)
+combined = pd.concat([df1, df2], 
+                     axis=0)  # Stack rows
+side = pd.concat([df1, df2], 
+                 axis=1)   # Add columns</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Join Types:</strong> Inner = only matching rows (intersection). Left = all from first table + matches. Outer = everything from both (union). <code>concat</code> stacks DataFrames like LEGO blocks.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MATPLOTLIB SECTION -->
+    <section id="matplotlib" class="library-section">
+        <div class="section-header">
+            <div class="section-icon matplotlib-icon">
+                <i data-lucide="bar-chart-3"></i>
+            </div>
+            <h2 class="section-title">Matplotlib</h2>
+            <p class="section-desc">The grandfather of Python plotting</p>
+        </div>
+
+        <div class="content-grid">
+            <div class="viz-card" id="matplotlibViz">
+                <div class="viz-header">
+                    <h3><i data-lucide="eye"></i> Interactive Plot Gallery</h3>
+                </div>
+                <div class="viz-canvas-container">
+                    <canvas id="matplotlib3DCanvas"></canvas>
+                    <div class="viz-controls">
+                        <button class="viz-btn active" data-plot="line">Line</button>
+                        <button class="viz-btn" data-plot="bar">Bar</button>
+                        <button class="viz-btn" data-plot="scatter">Scatter</button>
+                        <button class="viz-btn" data-plot="pie">Pie</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topics-container">
+                <div class="topic-card" data-topic="pyplot">
+                    <div class="topic-front">
+                        <div class="topic-number">01</div>
+                        <h3>Pyplot Basics</h3>
+                        <p>Your first line, scatter, and bar charts</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code>import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+# Line plot
+plt.plot(x, y, color='gold', 
+         linewidth=2, label='sin(x)')
+
+# Scatter plot
+plt.scatter(x[::10], y[::10], 
+           color='red', s=50)
+
+# Labels & Title
+plt.xlabel('X Axis')
+plt.ylabel('Y Axis')
+plt.title('My First Plot')
+plt.legend()
+plt.show()</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Start Here:</strong> <code>plt.plot()</code> connects dots with lines. <code>plt.scatter()</code> shows individual points. Always label your axes! <code>plt.show()</code> displays the figure. Think of it as drawing on digital paper.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="figure">
+                    <div class="topic-front">
+                        <div class="topic-number">02</div>
+                        <h3>Figure & Axes</h3>
+                        <p>Object-oriented approach for complex layouts</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Object-oriented style (recommended)
+fig, ax = plt.subplots(figsize=(8, 6))
+
+ax.plot(x, y, label='Line 1')
+ax.set_xlabel('Time')
+ax.set_ylabel('Value')
+ax.set_title('OO Style Plot')
+ax.legend()
+ax.grid(True, alpha=0.3)
+
+# Multiple subplots
+fig, axes = plt.subplots(2, 2, 
+                         figsize=(10, 8))
+axes[0,0].plot(x, np.sin(x))
+axes[0,1].plot(x, np.cos(x))
+axes[1,0].plot(x, np.tan(x))
+axes[1,1].plot(x, x**2)</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Best Practice:</strong> Use the object-oriented style for professional code. <code>fig</code> is the canvas, <code>ax</code> is the plot area. <code>subplots(2,2)</code> creates a 2x2 grid - like a comic book layout!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="customization">
+                    <div class="topic-front">
+                        <div class="topic-number">03</div>
+                        <h3>Styling & Colors</h3>
+                        <p>Make your plots publication-ready</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Colors: name, hex, RGB
+plt.plot(x, y, color='#D4AF37', 
+         linestyle='--', marker='o')
+
+# Markers: o, s, ^, D, *
+plt.plot(x, y, marker='s', 
+         markersize=8, 
+         markerfacecolor='red')
+
+# Styles
+plt.style.use('seaborn-v0_8-darkgrid')
+# or 'ggplot', 'bmh', 'fivethirtyeight'
+
+# Save high-res
+plt.savefig('plot.png', dpi=300, 
+            bbox_inches='tight')</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Pro Tips:</strong> Hex colors give you infinite options. <code>bbox_inches='tight'</code> removes ugly white borders. Styles change the whole look instantly. DPI=300 is print quality!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="plottypes">
+                    <div class="topic-front">
+                        <div class="topic-number">04</div>
+                        <h3>Plot Types</h3>
+                        <p>Histograms, box plots, heatmaps and more</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Histogram
+data = np.random.randn(1000)
+plt.hist(data, bins=30, 
+         color='purple', alpha=0.7)
+
+# Box plot
+plt.boxplot([data, data*2])
+
+# Bar chart
+categories = ['A', 'B', 'C']
+values = [10, 20, 15]
+plt.bar(categories, values, 
+        color=['gold', 'blue', 'red'])
+
+# Horizontal bar
+plt.barh(categories, values)
+
+# Pie chart
+plt.pie(values, labels=categories, 
+        autopct='%1.1f%%')</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>When to use what:</strong> Histogram = distribution shape. Box plot = outliers & quartiles. Bar chart = comparing categories. Pie chart = parts of a whole (use sparingly!).</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="advanced">
+                    <div class="topic-front">
+                        <div class="topic-number">05</div>
+                        <h3>Advanced Features</h3>
+                        <p>3D plots, animations, and annotations</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code>from mpl_toolkits.mplot3d import Axes3D
+
+# 3D plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot(x, y, z)
+
+# Annotations
+ax.annotate('Peak', xy=(5, 1), 
+            xytext=(6, 1.5),
+            arrowprops=dict(arrowstyle='->'))
+
+# Twin axes (two y-axes)
+ax2 = ax.twinx()
+ax2.plot(x, y2, color='red')
+
+# Log scale
+ax.set_yscale('log')</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Power User:</strong> 3D plots need the toolkit import. Annotations add text arrows to highlight points. Twin axes let you plot two different scales on the same chart - great for temperature vs rainfall!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEABORN SECTION -->
+    <section id="seaborn" class="library-section alt-bg">
+        <div class="section-header">
+            <div class="section-icon seaborn-icon">
+                <i data-lucide="palette"></i>
+            </div>
+            <h2 class="section-title">Seaborn</h2>
+            <p class="section-desc">Statistical visualization made beautiful</p>
+        </div>
+
+        <div class="content-grid">
+            <div class="viz-card" id="seabornViz">
+                <div class="viz-header">
+                    <h3><i data-lucide="eye"></i> Statistical Plot 3D View</h3>
+                </div>
+                <div class="viz-canvas-container">
+                    <canvas id="seaborn3DCanvas"></canvas>
+                    <div class="viz-controls">
+                        <button class="viz-btn active" data-chart="distribution">Distribution</button>
+                        <button class="viz-btn" data-chart="correlation">Correlation</button>
+                        <button class="viz-btn" data-chart="regression">Regression</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="topics-container">
+                <div class="topic-card" data-topic="setup">
+                    <div class="topic-front">
+                        <div class="topic-number">01</div>
+                        <h3>Setup & Themes</h3>
+                        <p>One line to make plots beautiful</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code>import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Set theme (darkgrid, whitegrid, 
+# dark, white, ticks)
+sns.set_theme(style='darkgrid', 
+              palette='husl')
+
+# Load example datasets
+tips = sns.load_dataset('tips')
+iris = sns.load_dataset('iris')
+
+# Quick overview
+print(tips.head())</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Why Seaborn?</strong> It sits on top of Matplotlib and makes everything prettier automatically. <code>set_theme()</code> is your magic wand. Built-in datasets let you practice without finding data!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="distribution">
+                    <div class="topic-front">
+                        <div class="topic-number">02</div>
+                        <h3>Distribution Plots</h3>
+                        <p>Understand your data's shape and spread</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Histogram with KDE
+sns.histplot(data=tips, x='total_bill', 
+             kde=True, bins=20)
+
+# KDE only (smooth curve)
+sns.kdeplot(data=tips, x='total_bill', 
+            hue='sex', fill=True)
+
+# Box plot
+sns.boxplot(data=tips, x='day', 
+            y='total_bill', hue='sex')
+
+# Violin plot (box + distribution)
+sns.violinplot(data=tips, x='day', 
+               y='total_bill')</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Visual Guide:</strong> Histogram = frequency bars. KDE = smooth probability curve. Box plot = median, quartiles, outliers. Violin = box plot + distribution shape combined!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="categorical">
+                    <div class="topic-front">
+                        <div class="topic-number">03</div>
+                        <h3>Categorical Plots</h3>
+                        <p>Compare groups and categories visually</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Bar plot with confidence interval
+sns.barplot(data=tips, x='day', 
+            y='total_bill', hue='sex')
+
+# Count plot (like value_counts)
+sns.countplot(data=tips, x='day', 
+              palette='viridis')
+
+# Strip plot (individual points)
+sns.stripplot(data=tips, x='day', 
+              y='total_bill', 
+              jitter=True, alpha=0.6)
+
+# Swarm plot (non-overlapping points)
+sns.swarmplot(data=tips, x='day', 
+              y='total_bill')</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Comparison Toolkit:</strong> Bar plot shows averages with error bars. Count plot = frequency table as bars. Strip/swarm show every single data point - great for seeing the actual distribution!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="relational">
+                    <div class="topic-front">
+                        <div class="topic-number">04</div>
+                        <h3>Relational Plots</h3>
+                        <p>Scatter plots with superpowers</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Enhanced scatter plot
+sns.scatterplot(data=tips, x='total_bill', 
+                y='tip', hue='sex', 
+                size='size', alpha=0.7)
+
+# Regression line with scatter
+sns.regplot(data=tips, x='total_bill', 
+            y='tip', scatter_kws={'alpha':0.5})
+
+# lmplot (regression with facets)
+sns.lmplot(data=tips, x='total_bill', 
+           y='tip', hue='sex', 
+           col='time')
+
+# Joint plot (scatter + histograms)
+sns.jointplot(data=tips, x='total_bill', 
+              y='tip', kind='hex')</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Relationship Mapping:</strong> <code>hue</code> colors by category, <code>size</code> varies dot size. <code>regplot</code> draws the best-fit line. <code>jointplot</code> shows marginals - like having eyes on the sides!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="matrix">
+                    <div class="topic-front">
+                        <div class="topic-number">05</div>
+                        <h3>Matrix & Heatmaps</h3>
+                        <p>Correlations and structured data at a glance</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># Correlation matrix
+corr = tips[['total_bill', 'tip', 
+             'size']].corr()
+
+# Heatmap
+sns.heatmap(corr, annot=True, 
+            cmap='coolwarm', 
+            center=0, 
+            square=True)
+
+# Clustermap (sorted heatmap)
+sns.clustermap(corr, annot=True, 
+               cmap='viridis')
+
+# Pairplot (all vs all)
+sns.pairplot(iris, hue='species', 
+             palette='husl')</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Data Scientist's Best Friend:</strong> Heatmaps show correlation strength (red=positive, blue=negative). <code>annot=True</code> shows numbers. Pairplot creates every possible scatter plot in one command - instant EDA!</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+
+                <div class="topic-card" data-topic="faceting">
+                    <div class="topic-front">
+                        <div class="topic-number">06</div>
+                        <h3>Faceting & Grids</h3>
+                        <p>Small multiples for complex comparisons</p>
+                        <button class="flip-btn"><i data-lucide="rotate-cw"></i> Learn</button>
+                    </div>
+                    <div class="topic-back">
+                        <div class="code-block">
+                            <pre><code># FacetGrid (manual control)
+g = sns.FacetGrid(tips, col='time', 
+                  row='sex')
+g.map(sns.scatterplot, 'total_bill', 'tip')
+
+# PairGrid (custom pairplot)
+g = sns.PairGrid(iris, hue='species')
+g.map_diag(sns.histplot)
+g.map_offdiag(sns.scatterplot)
+
+# Catplot (categorical with facets)
+sns.catplot(data=tips, x='day', 
+            y='total_bill', 
+            col='sex', kind='box')</code></pre>
+                        </div>
+                        <div class="explanation">
+                            <p><strong>Advanced Technique:</strong> Faceting splits data into subplots by category. Instead of one crowded plot, you get clean small multiples. <code>FacetGrid</code> is the artist's canvas for custom layouts.</p>
+                        </div>
+                        <button class="flip-btn back"><i data-lucide="rotate-ccw"></i> Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUIZZES SECTION -->
+    <section id="quizzes" class="quiz-section">
+        <div class="section-header">
+            <div class="section-icon quiz-icon">
+                <i data-lucide="target"></i>
+            </div>
+            <h2 class="section-title">Test Your Knowledge</h2>
+            <p class="section-desc">Quizzes to solidify your learning</p>
+        </div>
+
+        <div class="quiz-selector">
+            <div class="quiz-card" data-quiz="numpy">
+                <div class="quiz-icon-wrap">
+                    <i data-lucide="box"></i>
+                </div>
+                <h3>NumPy Quiz</h3>
+                <p>10 questions • Arrays & Math</p>
+                <div class="quiz-status" id="status-numpy">Not Started</div>
+                <button class="btn btn-quiz" onclick="startQuiz('numpy')">Start Quiz</button>
+            </div>
+            <div class="quiz-card" data-quiz="pandas">
+                <div class="quiz-icon-wrap">
+                    <i data-lucide="table"></i>
+                </div>
+                <h3>Pandas Quiz</h3>
+                <p>10 questions • DataFrames</p>
+                <div class="quiz-status" id="status-pandas">Not Started</div>
+                <button class="btn btn-quiz" onclick="startQuiz('pandas')">Start Quiz</button>
+            </div>
+            <div class="quiz-card" data-quiz="matplotlib">
+                <div class="quiz-icon-wrap">
+                    <i data-lucide="bar-chart-3"></i>
+                </div>
+                <h3>Matplotlib Quiz</h3>
+                <p>10 questions • Plotting</p>
+                <div class="quiz-status" id="status-matplotlib">Not Started</div>
+                <button class="btn btn-quiz" onclick="startQuiz('matplotlib')">Start Quiz</button>
+            </div>
+            <div class="quiz-card" data-quiz="seaborn">
+                <div class="quiz-icon-wrap">
+                    <i data-lucide="palette"></i>
+                </div>
+                <h3>Seaborn Quiz</h3>
+                <p>10 questions • Statistics</p>
+                <div class="quiz-status" id="status-seaborn">Not Started</div>
+                <button class="btn btn-quiz" onclick="startQuiz('seaborn')">Start Quiz</button>
+            </div>
+            <div class="quiz-card final-quiz" data-quiz="final">
+                <div class="quiz-icon-wrap">
+                    <i data-lucide="trophy"></i>
+                </div>
+                <h3>Final Challenge</h3>
+                <p>20 questions • All Libraries</p>
+                <div class="quiz-status" id="status-final">Locked</div>
+                <button class="btn btn-quiz" id="btn-final" onclick="startQuiz('final')" disabled>Locked</button>
+            </div>
+        </div>
+
+        <!-- Quiz Modal -->
+        <div class="quiz-modal" id="quizModal">
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <h3 id="quizTitle">Quiz</h3>
+                    <div class="quiz-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="quizProgress"></div>
+                        </div>
+                        <span id="quizCounter">1/10</span>
+                    </div>
+                    <button class="quiz-close" onclick="closeQuiz()">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+                <div class="quiz-body" id="quizBody">
+                    <!-- Questions injected here -->
+                </div>
+                <div class="quiz-footer">
+                    <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" disabled>Previous</button>
+                    <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESULTS SECTION -->
+    <section id="results" class="results-section">
+        <div class="section-header">
+            <div class="section-icon results-icon">
+                <i data-lucide="award"></i>
+            </div>
+            <h2 class="section-title">Your Progress</h2>
+            <p class="section-desc">Track your learning journey</p>
+        </div>
+
+        <div class="results-dashboard">
+            <div class="result-card overall">
+                <div class="result-circle">
+                    <svg viewBox="0 0 100 100">
+                        <circle class="circle-bg" cx="50" cy="50" r="45"/>
+                        <circle class="circle-progress" id="overallCircle" cx="50" cy="50" r="45"/>
+                    </svg>
+                    <div class="result-percentage" id="overallPercent">0%</div>
+                </div>
+                <h3>Overall Score</h3>
+                <p id="overallText">Complete quizzes to see results</p>
+            </div>
+
+            <div class="result-breakdown">
+                <div class="breakdown-item">
+                    <div class="breakdown-icon numpy-icon">
+                        <i data-lucide="box"></i>
+                    </div>
+                    <div class="breakdown-info">
+                        <h4>NumPy</h4>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" id="bar-numpy"></div>
+                        </div>
+                        <span id="score-numpy">0/10</span>
+                    </div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-icon pandas-icon">
+                        <i data-lucide="table"></i>
+                    </div>
+                    <div class="breakdown-info">
+                        <h4>Pandas</h4>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" id="bar-pandas"></div>
+                        </div>
+                        <span id="score-pandas">0/10</span>
+                    </div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-icon matplotlib-icon">
+                        <i data-lucide="bar-chart-3"></i>
+                    </div>
+                    <div class="breakdown-info">
+                        <h4>Matplotlib</h4>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" id="bar-matplotlib"></div>
+                        </div>
+                        <span id="score-matplotlib">0/10</span>
+                    </div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-icon seaborn-icon">
+                        <i data-lucide="palette"></i>
+                    </div>
+                    <div class="breakdown-info">
+                        <h4>Seaborn</h4>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" id="bar-seaborn"></div>
+                        </div>
+                        <span id="score-seaborn">0/10</span>
+                    </div>
+                </div>
+                <div class="breakdown-item final-item">
+                    <div class="breakdown-icon final-icon">
+                        <i data-lucide="trophy"></i>
+                    </div>
+                    <div class="breakdown-info">
+                        <h4>Final Challenge</h4>
+                        <div class="breakdown-bar">
+                            <div class="breakdown-fill" id="bar-final"></div>
+                        </div>
+                        <span id="score-final">0/20</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="achievements" id="achievements">
+            <h3>Achievements</h3>
+            <div class="achievement-grid">
+                <div class="achievement" id="ach-numpy" data-locked="true">
+                    <i data-lucide="box"></i>
+                    <span>NumPy Master</span>
+                </div>
+                <div class="achievement" id="ach-pandas" data-locked="true">
+                    <i data-lucide="table"></i>
+                    <span>Pandas Pro</span>
+                </div>
+                <div class="achievement" id="ach-matplotlib" data-locked="true">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Plotting Wizard</span>
+                </div>
+                <div class="achievement" id="ach-seaborn" data-locked="true">
+                    <i data-lucide="palette"></i>
+                    <span>Seaborn Artist</span>
+                </div>
+                <div class="achievement" id="ach-perfect" data-locked="true">
+                    <i data-lucide="star"></i>
+                    <span>Perfect Score</span>
+                </div>
+                <div class="achievement" id="ach-final" data-locked="true">
+                    <i data-lucide="crown"></i>
+                    <span>Data Science Royal</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i data-lucide="crown" class="brand-icon"></i>
+                <span>Py<span class="gold">Royal</span></span>
+            </div>
+            <p>Master Python Data Science Libraries with interactive 3D learning</p>
+            <div class="footer-links">
+                <a href="#numpy">NumPy</a>
+                <a href="#pandas">Pandas</a>
+                <a href="#matplotlib">Matplotlib</a>
+                <a href="#seaborn">Seaborn</a>
+                <a href="#quizzes">Quizzes</a>
+            </div>
+            <div class="footer-bottom">
+                <p>Made for Future Data Scientists</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
