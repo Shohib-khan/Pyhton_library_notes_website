@@ -1,5 +1,6 @@
 /* ============================================
    PYROYAL - JavaScript
+   FIXED VERSION - All issues resolved
    3D Visualizations, Quizzes & Interactivity
    ============================================ */
 
@@ -570,13 +571,23 @@ const quizData = {
 let currentQuiz = null;
 let currentQuestion = 0;
 let userAnswers = [];
-let quizScores = JSON.parse(localStorage.getItem('pyroyal_scores')) || {};
+let quizScores = {};
+
+try {
+    quizScores = JSON.parse(localStorage.getItem('pyroyal_scores')) || {};
+} catch (e) {
+    quizScores = {};
+}
 
 // ============================================
 // INITIALIZATION
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    lucide.createIcons();
+    // Initialize Lucide icons
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
     initNavbar();
     initHero3D();
     initScrollAnimations();
@@ -585,18 +596,21 @@ document.addEventListener('DOMContentLoaded', () => {
     updateProgress();
     updateResults();
     checkFinalUnlock();
-
-    // Initialize 3D visualizations when sections are visible
     initIntersectionObserver();
+
+    // Add shake animation style
+    addShakeStyle();
 });
 
 // ============================================
-// NAVBAR
+// NAVBAR - FIXED with scroll offset
 // ============================================
 function initNavbar() {
     const navbar = document.getElementById('navbar');
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
+
+    if (!navbar) return;
 
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
@@ -604,30 +618,49 @@ function initNavbar() {
         } else {
             navbar.classList.remove('scrolled');
         }
-
-        // Update active nav link
         updateActiveNav();
     });
 
-    navToggle.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-    });
+    if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    }
 
     // Close mobile menu on link click
     document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            scrollToSection(targetId);
+            if (navLinks) navLinks.classList.remove('active');
         });
+    });
+}
+
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+
+    const navbar = document.getElementById('navbar');
+    const navHeight = navbar ? navbar.offsetHeight : 70;
+    const sectionTop = section.offsetTop - navHeight - 20;
+
+    window.scrollTo({
+        top: sectionTop,
+        behavior: 'smooth'
     });
 }
 
 function updateActiveNav() {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
+    const navbar = document.getElementById('navbar');
+    const navHeight = navbar ? navbar.offsetHeight : 70;
 
     let current = '';
     sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
+        const sectionTop = section.offsetTop - navHeight - 100;
         if (window.scrollY >= sectionTop) {
             current = section.getAttribute('id');
         }
@@ -635,156 +668,172 @@ function updateActiveNav() {
 
     navLinks.forEach(link => {
         link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
+        if (link.getAttribute('href') === '#' + current) {
             link.classList.add('active');
         }
     });
 }
 
 // ============================================
-// HERO 3D ANIMATION (Three.js)
+// HERO 3D ANIMATION (Three.js) - FIXED
 // ============================================
 function initHero3D() {
     const canvas = document.getElementById('heroCanvas');
     if (!canvas) return;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    try {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Create floating geometric shapes
-    const shapes = [];
-    const geometries = [
-        new THREE.IcosahedronGeometry(0.8, 0),
-        new THREE.OctahedronGeometry(0.7, 0),
-        new THREE.TetrahedronGeometry(0.9, 0),
-        new THREE.BoxGeometry(0.6, 0.6, 0.6),
-        new THREE.DodecahedronGeometry(0.7, 0)
-    ];
+        // Create floating geometric shapes
+        const shapes = [];
+        const geometries = [
+            new THREE.IcosahedronGeometry(0.8, 0),
+            new THREE.OctahedronGeometry(0.7, 0),
+            new THREE.TetrahedronGeometry(0.9, 0),
+            new THREE.BoxGeometry(0.6, 0.6, 0.6),
+            new THREE.DodecahedronGeometry(0.7, 0)
+        ];
 
-    const material = new THREE.MeshBasicMaterial({
-        color: 0xd4af37,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.3
-    });
-
-    const violetMaterial = new THREE.MeshBasicMaterial({
-        color: 0x8b5cf6,
-        wireframe: true,
-        transparent: true,
-        opacity: 0.2
-    });
-
-    for (let i = 0; i < 15; i++) {
-        const geo = geometries[Math.floor(Math.random() * geometries.length)];
-        const mat = Math.random() > 0.5 ? material : violetMaterial;
-        const mesh = new THREE.Mesh(geo, mat);
-
-        mesh.position.set(
-            (Math.random() - 0.5) * 20,
-            (Math.random() - 0.5) * 20,
-            (Math.random() - 0.5) * 10 - 5
-        );
-
-        mesh.rotation.set(
-            Math.random() * Math.PI,
-            Math.random() * Math.PI,
-            Math.random() * Math.PI
-        );
-
-        mesh.userData = {
-            rotSpeed: {
-                x: (Math.random() - 0.5) * 0.01,
-                y: (Math.random() - 0.5) * 0.01,
-                z: (Math.random() - 0.5) * 0.01
-            },
-            floatSpeed: Math.random() * 0.5 + 0.5,
-            floatOffset: Math.random() * Math.PI * 2
-        };
-
-        scene.add(mesh);
-        shapes.push(mesh);
-    }
-
-    // Add particles
-    const particlesGeo = new THREE.BufferGeometry();
-    const particleCount = 200;
-    const posArray = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i++) {
-        posArray[i] = (Math.random() - 0.5) * 30;
-    }
-
-    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-    const particlesMat = new THREE.PointsMaterial({
-        size: 0.05,
-        color: 0xd4af37,
-        transparent: true,
-        opacity: 0.6
-    });
-
-    const particles = new THREE.Points(particlesGeo, particlesMat);
-    scene.add(particles);
-
-    camera.position.z = 5;
-
-    let mouseX = 0;
-    let mouseY = 0;
-
-    document.addEventListener('mousemove', (e) => {
-        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-    });
-
-    function animate() {
-        requestAnimationFrame(animate);
-
-        const time = Date.now() * 0.001;
-
-        shapes.forEach(shape => {
-            shape.rotation.x += shape.userData.rotSpeed.x;
-            shape.rotation.y += shape.userData.rotSpeed.y;
-            shape.rotation.z += shape.userData.rotSpeed.z;
-
-            shape.position.y += Math.sin(time * shape.userData.floatSpeed + shape.userData.floatOffset) * 0.002;
+        const goldMat = new THREE.MeshBasicMaterial({
+            color: 0xd4af37,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
         });
 
-        particles.rotation.y = time * 0.05;
+        const violetMat = new THREE.MeshBasicMaterial({
+            color: 0x8b5cf6,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.2
+        });
 
-        camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
-        camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
-        camera.lookAt(scene.position);
+        for (let i = 0; i < 15; i++) {
+            const geo = geometries[Math.floor(Math.random() * geometries.length)];
+            const mat = Math.random() > 0.5 ? goldMat : violetMat;
+            const mesh = new THREE.Mesh(geo, mat);
 
-        renderer.render(scene, camera);
+            mesh.position.set(
+                (Math.random() - 0.5) * 20,
+                (Math.random() - 0.5) * 20,
+                (Math.random() - 0.5) * 10 - 5
+            );
+
+            mesh.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
+
+            mesh.userData = {
+                rotSpeed: {
+                    x: (Math.random() - 0.5) * 0.01,
+                    y: (Math.random() - 0.5) * 0.01,
+                    z: (Math.random() - 0.5) * 0.01
+                },
+                floatSpeed: Math.random() * 0.5 + 0.5,
+                floatOffset: Math.random() * Math.PI * 2
+            };
+
+            scene.add(mesh);
+            shapes.push(mesh);
+        }
+
+        // Add particles
+        const particlesGeo = new THREE.BufferGeometry();
+        const particleCount = 200;
+        const posArray = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 30;
+        }
+
+        particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMat = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0xd4af37,
+            transparent: true,
+            opacity: 0.6
+        });
+
+        const particles = new THREE.Points(particlesGeo, particlesMat);
+        scene.add(particles);
+
+        camera.position.z = 5;
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let isActive = true;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+        });
+
+        // Pause when not visible
+        const heroObserver = new IntersectionObserver((entries) => {
+            isActive = entries[0].isIntersecting;
+        }, { threshold: 0.1 });
+
+        const heroSection = document.getElementById('home');
+        if (heroSection) heroObserver.observe(heroSection);
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (!isActive) return;
+
+            const time = Date.now() * 0.001;
+
+            shapes.forEach(shape => {
+                shape.rotation.x += shape.userData.rotSpeed.x;
+                shape.rotation.y += shape.userData.rotSpeed.y;
+                shape.rotation.z += shape.userData.rotSpeed.z;
+
+                shape.position.y += Math.sin(time * shape.userData.floatSpeed + shape.userData.floatOffset) * 0.002;
+            });
+
+            particles.rotation.y = time * 0.05;
+
+            camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+            camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    } catch (e) {
+        console.log('Hero 3D not available:', e);
     }
-
-    animate();
-
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
 }
 
 // ============================================
 // SCROLL ANIMATIONS (GSAP)
 // ============================================
 function initScrollAnimations() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
     gsap.registerPlugin(ScrollTrigger);
 
-    // Section headers
     gsap.utils.toArray('.section-header').forEach(header => {
         gsap.from(header, {
             scrollTrigger: {
                 trigger: header,
-                start: 'top 80%',
-                toggleActions: 'play none none reverse'
+                start: 'top 85%',
+                toggleActions: 'play none none none'
             },
             y: 50,
             opacity: 0,
@@ -793,13 +842,12 @@ function initScrollAnimations() {
         });
     });
 
-    // Topic cards stagger
     gsap.utils.toArray('.topics-container').forEach(container => {
         gsap.from(container.children, {
             scrollTrigger: {
                 trigger: container,
-                start: 'top 80%',
-                toggleActions: 'play none none reverse'
+                start: 'top 85%',
+                toggleActions: 'play none none none'
             },
             y: 60,
             opacity: 0,
@@ -809,13 +857,12 @@ function initScrollAnimations() {
         });
     });
 
-    // Viz cards
     gsap.utils.toArray('.viz-card').forEach(card => {
         gsap.from(card, {
             scrollTrigger: {
                 trigger: card,
-                start: 'top 80%',
-                toggleActions: 'play none none reverse'
+                start: 'top 85%',
+                toggleActions: 'play none none none'
             },
             scale: 0.9,
             opacity: 0,
@@ -826,36 +873,55 @@ function initScrollAnimations() {
 }
 
 // ============================================
-// TOPIC CARDS (3D FLIP)
+// TOPIC CARDS (3D FLIP) - FIXED with inner wrapper
 // ============================================
 function initTopicCards() {
+    // Wrap card content in inner container for proper 3D transform
     document.querySelectorAll('.topic-card').forEach(card => {
-        const flipBtns = card.querySelectorAll('.flip-btn');
-        flipBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                card.classList.toggle('flipped');
-            });
-        });
+        const front = card.querySelector('.topic-front');
+        const back = card.querySelector('.topic-back');
+
+        if (!front || !back) return;
+
+        // Create inner wrapper
+        const inner = document.createElement('div');
+        inner.className = 'topic-card-inner';
+
+        // Move front and back into inner
+        card.removeChild(front);
+        card.removeChild(back);
+        inner.appendChild(front);
+        inner.appendChild(back);
+        card.appendChild(inner);
     });
 }
 
+function flipCard(btn) {
+    const card = btn.closest('.topic-card');
+    if (card) {
+        card.classList.toggle('flipped');
+    }
+}
+
 // ============================================
-// 3D VISUALIZATIONS FOR LIBRARIES
+// 3D VISUALIZATIONS FOR LIBRARIES - FIXED
 // ============================================
 const vizScenes = {};
+let vizInitialized = {};
 
 function initIntersectionObserver() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                const canvasId = entry.target.querySelector('canvas')?.id;
-                if (canvasId && !vizScenes[canvasId]) {
-                    initLibraryViz(canvasId);
+                const canvas = entry.target.querySelector('canvas');
+                if (canvas && !vizInitialized[canvas.id]) {
+                    vizInitialized[canvas.id] = true;
+                    // Small delay to ensure container has size
+                    setTimeout(() => initLibraryViz(canvas.id), 100);
                 }
             }
         });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.1 });
 
     document.querySelectorAll('.viz-card').forEach(card => {
         observer.observe(card);
@@ -867,42 +933,56 @@ function initLibraryViz(canvasId) {
     if (!canvas) return;
 
     const container = canvas.parentElement;
-    const width = container.clientWidth;
-    const height = container.clientHeight;
+    if (!container) return;
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 100);
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    try {
+        const width = container.clientWidth || 800;
+        const height = container.clientHeight || 400;
 
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 100);
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 
-    vizScenes[canvasId] = { scene, camera, renderer, objects: [], animationId: null };
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    switch(canvasId) {
-        case 'numpy3DCanvas':
-            createNumpyViz(vizScenes[canvasId]);
-            break;
-        case 'pandas3DCanvas':
-            createPandasViz(vizScenes[canvasId]);
-            break;
-        case 'matplotlib3DCanvas':
-            createMatplotlibViz(vizScenes[canvasId]);
-            break;
-        case 'seaborn3DCanvas':
-            createSeabornViz(vizScenes[canvasId]);
-            break;
+        vizScenes[canvasId] = { 
+            scene, camera, renderer, 
+            objects: [], 
+            animationId: null,
+            isActive: true 
+        };
+
+        switch(canvasId) {
+            case 'numpy3DCanvas':
+                createNumpyViz(vizScenes[canvasId]);
+                break;
+            case 'pandas3DCanvas':
+                createPandasViz(vizScenes[canvasId]);
+                break;
+            case 'matplotlib3DCanvas':
+                createMatplotlibViz(vizScenes[canvasId]);
+                break;
+            case 'seaborn3DCanvas':
+                createSeabornViz(vizScenes[canvasId]);
+                break;
+        }
+
+        // Handle resize
+        const resizeObserver = new ResizeObserver(() => {
+            const w = container.clientWidth || 800;
+            const h = container.clientHeight || 400;
+            if (w > 0 && h > 0) {
+                camera.aspect = w / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(w, h);
+            }
+        });
+        resizeObserver.observe(container);
+
+    } catch (e) {
+        console.log('Library viz error:', e);
     }
-
-    // Handle resize
-    const resizeObserver = new ResizeObserver(() => {
-        const w = container.clientWidth;
-        const h = container.clientHeight;
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w, h);
-    });
-    resizeObserver.observe(container);
 }
 
 // NumPy: 3D Array Cube
@@ -913,7 +993,6 @@ function createNumpyViz(viz) {
 
     const group = new THREE.Group();
 
-    // Create 3x3x3 cube of small boxes
     const boxGeo = new THREE.BoxGeometry(0.8, 0.8, 0.8);
     const goldMat = new THREE.MeshBasicMaterial({ color: 0xd4af37, wireframe: true });
     const violetMat = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, wireframe: true });
@@ -924,7 +1003,7 @@ function createNumpyViz(viz) {
         for (let y = -1; y <= 1; y++) {
             for (let z = -1; z <= 1; z++) {
                 const isCenter = x === 0 && y === 0 && z === 0;
-                const mat = isCenter ? fillGold : (Math.random() > 0.5 ? fillViolet : fillGold);
+                const mat = isCenter ? fillGold : (Math.abs(x) + Math.abs(y) + Math.abs(z)) % 2 === 0 ? fillViolet : fillGold;
                 const wireMat = isCenter ? goldMat : violetMat;
 
                 const mesh = new THREE.Mesh(boxGeo, mat);
@@ -944,6 +1023,10 @@ function createNumpyViz(viz) {
     viz.objects.push(group);
 
     function animate() {
+        if (!viz.isActive) {
+            viz.animationId = requestAnimationFrame(animate);
+            return;
+        }
         viz.animationId = requestAnimationFrame(animate);
         group.rotation.y += 0.005;
         group.rotation.x += 0.002;
@@ -960,7 +1043,6 @@ function createPandasViz(viz) {
 
     const group = new THREE.Group();
 
-    // Create grid representing DataFrame
     const cellGeo = new THREE.BoxGeometry(0.9, 0.9, 0.2);
     const headerMat = new THREE.MeshBasicMaterial({ color: 0xd4af37 });
     const cellMat = new THREE.MeshBasicMaterial({ color: 0x334155 });
@@ -979,6 +1061,10 @@ function createPandasViz(viz) {
     viz.objects.push(group);
 
     function animate() {
+        if (!viz.isActive) {
+            viz.animationId = requestAnimationFrame(animate);
+            return;
+        }
         viz.animationId = requestAnimationFrame(animate);
         group.rotation.y += 0.003;
         renderer.render(scene, camera);
@@ -998,14 +1084,13 @@ function createMatplotlibViz(viz) {
     const colors = [0xd4af37, 0x8b5cf6, 0x22c55e, 0xef4444, 0x3b82f6];
 
     for (let i = 0; i < 5; i++) {
-        const height = Math.random() * 2 + 0.5;
+        const height = [1.5, 2.2, 1.8, 2.5, 1.2][i];
         const mat = new THREE.MeshBasicMaterial({ color: colors[i] });
         const bar = new THREE.Mesh(barGeo, mat);
         bar.position.set((i - 2) * 1.2, height / 2 - 1, 0);
         bar.scale.y = height;
         group.add(bar);
 
-        // Add wireframe
         const wire = new THREE.Mesh(barGeo, new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true }));
         wire.position.copy(bar.position);
         wire.scale.y = height;
@@ -1016,6 +1101,10 @@ function createMatplotlibViz(viz) {
     viz.objects.push(group);
 
     function animate() {
+        if (!viz.isActive) {
+            viz.animationId = requestAnimationFrame(animate);
+            return;
+        }
         viz.animationId = requestAnimationFrame(animate);
         group.rotation.y += 0.005;
         renderer.render(scene, camera);
@@ -1031,7 +1120,6 @@ function createSeabornViz(viz) {
 
     const group = new THREE.Group();
 
-    // Create bell curve shape with spheres
     const sphereGeo = new THREE.SphereGeometry(0.3, 16, 16);
     const goldMat = new THREE.MeshBasicMaterial({ color: 0xd4af37, transparent: true, opacity: 0.7 });
     const violetMat = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, transparent: true, opacity: 0.5 });
@@ -1049,6 +1137,10 @@ function createSeabornViz(viz) {
     viz.objects.push(group);
 
     function animate() {
+        if (!viz.isActive) {
+            viz.animationId = requestAnimationFrame(animate);
+            return;
+        }
         viz.animationId = requestAnimationFrame(animate);
         group.rotation.y += 0.003;
         renderer.render(scene, camera);
@@ -1057,30 +1149,60 @@ function createSeabornViz(viz) {
 }
 
 // ============================================
-// VIZ CONTROLS
+// VIZ CONTROL SWITCHERS
 // ============================================
-function initVizControls() {
-    document.querySelectorAll('.viz-controls').forEach(controls => {
-        controls.querySelectorAll('.viz-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                controls.querySelectorAll('.viz-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+function switchNumpyViz(mode) {
+    updateVizButtons('numpyViz', mode);
+    pulseCanvas('numpy3DCanvas');
+}
 
-                // Add a pulse animation to the canvas
-                const canvas = controls.parentElement.querySelector('canvas');
-                if (canvas) {
-                    canvas.style.transform = 'scale(0.98)';
-                    setTimeout(() => {
-                        canvas.style.transform = 'scale(1)';
-                    }, 200);
-                }
-            });
-        });
+function switchPandasViz(mode) {
+    updateVizButtons('pandasViz', mode);
+    pulseCanvas('pandas3DCanvas');
+}
+
+function switchMatplotlibViz(mode) {
+    updateVizButtons('matplotlibViz', mode);
+    pulseCanvas('matplotlib3DCanvas');
+}
+
+function switchSeabornViz(mode) {
+    updateVizButtons('seabornViz', mode);
+    pulseCanvas('seaborn3DCanvas');
+}
+
+function updateVizButtons(vizId, activeMode) {
+    const viz = document.getElementById(vizId);
+    if (!viz) return;
+
+    viz.querySelectorAll('.viz-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-dim') === activeMode || 
+            btn.getAttribute('data-action') === activeMode ||
+            btn.getAttribute('data-plot') === activeMode ||
+            btn.getAttribute('data-chart') === activeMode) {
+            btn.classList.add('active');
+        }
     });
 }
 
+function pulseCanvas(canvasId) {
+    const canvas = document.getElementById(canvasId);
+    if (canvas) {
+        canvas.style.transition = 'transform 0.2s ease';
+        canvas.style.transform = 'scale(0.97)';
+        setTimeout(() => {
+            canvas.style.transform = 'scale(1)';
+        }, 200);
+    }
+}
+
+function initVizControls() {
+    // Controls are now handled by onclick attributes in HTML
+}
+
 // ============================================
-// QUIZ SYSTEM
+// QUIZ SYSTEM - FIXED
 // ============================================
 function startQuiz(quizType) {
     if (quizType === 'final' && !isFinalUnlocked()) {
@@ -1094,6 +1216,10 @@ function startQuiz(quizType) {
 
     const modal = document.getElementById('quizModal');
     const title = document.getElementById('quizTitle');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+
+    if (!modal) return;
 
     const titles = {
         numpy: 'NumPy Quiz',
@@ -1103,9 +1229,20 @@ function startQuiz(quizType) {
         final: 'Final Challenge'
     };
 
-    title.textContent = titles[quizType];
+    if (title) title.textContent = titles[quizType] || 'Quiz';
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+
+    // Reset buttons
+    if (nextBtn) {
+        nextBtn.textContent = 'Next';
+        nextBtn.onclick = nextQuestion;
+        nextBtn.disabled = false;
+    }
+    if (prevBtn) {
+        prevBtn.style.display = 'flex';
+        prevBtn.disabled = true;
+    }
 
     renderQuestion();
     updateQuizProgress();
@@ -1113,44 +1250,50 @@ function startQuiz(quizType) {
 
 function closeQuiz() {
     const modal = document.getElementById('quizModal');
-    modal.classList.remove('active');
+    if (modal) modal.classList.remove('active');
     document.body.style.overflow = '';
     currentQuiz = null;
 }
 
 function renderQuestion() {
     const quizBody = document.getElementById('quizBody');
-    const question = quizData[currentQuiz][currentQuestion];
+    if (!quizBody || !currentQuiz) return;
 
-    let html = `
-        <div class="question-container">
-            <div class="question-text">${currentQuestion + 1}. ${question.question}</div>
-    `;
+    const question = quizData[currentQuiz][currentQuestion];
+    if (!question) return;
+
+    let html = '<div class="question-container">';
+    html += '<div class="question-text">' + (currentQuestion + 1) + '. ' + question.question + '</div>';
 
     if (question.code) {
-        html += `<div class="question-code">${question.code.replace(/\n/g, '<br>')}</div>`;
+        const formattedCode = question.code.replace(/\\n/g, '
+').replace(/\n/g, '<br>');
+        html += '<div class="question-code">' + formattedCode + '</div>';
     }
 
-    html += `<div class="options-list">`;
+    html += '<div class="options-list">';
 
     question.options.forEach((option, idx) => {
         const letter = String.fromCharCode(65 + idx);
         const selected = userAnswers[currentQuestion] === idx ? 'selected' : '';
-        html += `
-            <div class="option ${selected}" onclick="selectOption(${idx})">
-                <div class="option-letter">${letter}</div>
-                <span>${option}</span>
-            </div>
-        `;
+        html += '<div class="option ' + selected + '" onclick="selectOption(' + idx + ')">';
+        html += '<div class="option-letter">' + letter + '</div>';
+        html += '<span>' + option + '</span>';
+        html += '</div>';
     });
 
-    html += `</div></div>`;
+    html += '</div></div>';
     quizBody.innerHTML = html;
 
     // Update buttons
-    document.getElementById('prevBtn').disabled = currentQuestion === 0;
-    document.getElementById('nextBtn').textContent = 
-        currentQuestion === quizData[currentQuiz].length - 1 ? 'Finish' : 'Next';
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    if (prevBtn) prevBtn.disabled = currentQuestion === 0;
+    if (nextBtn) {
+        nextBtn.textContent = currentQuestion === quizData[currentQuiz].length - 1 ? 'Finish' : 'Next';
+        nextBtn.disabled = false;
+    }
 }
 
 function selectOption(index) {
@@ -1166,12 +1309,12 @@ function selectOption(index) {
 
 function nextQuestion() {
     if (userAnswers[currentQuestion] === null) {
-        // Shake animation for unanswered
         const container = document.querySelector('.question-container');
-        container.style.animation = 'none';
-        setTimeout(() => {
-            container.style.animation = 'shake 0.5s';
-        }, 10);
+        if (container) {
+            container.style.animation = 'none';
+            container.offsetHeight; // trigger reflow
+            container.style.animation = 'shake 0.5s ease';
+        }
         return;
     }
 
@@ -1193,10 +1336,15 @@ function prevQuestion() {
 }
 
 function updateQuizProgress() {
+    if (!currentQuiz) return;
     const total = quizData[currentQuiz].length;
     const progress = ((currentQuestion + 1) / total) * 100;
-    document.getElementById('quizProgress').style.width = progress + '%';
-    document.getElementById('quizCounter').textContent = `${currentQuestion + 1}/${total}`;
+
+    const progressEl = document.getElementById('quizProgress');
+    const counterEl = document.getElementById('quizCounter');
+
+    if (progressEl) progressEl.style.width = progress + '%';
+    if (counterEl) counterEl.textContent = (currentQuestion + 1) + '/' + total;
 }
 
 function finishQuiz() {
@@ -1215,7 +1363,11 @@ function finishQuiz() {
 
     // Save score
     quizScores[currentQuiz] = { score, total, percentage, date: new Date().toISOString() };
-    localStorage.setItem('pyroyal_scores', JSON.stringify(quizScores));
+    try {
+        localStorage.setItem('pyroyal_scores', JSON.stringify(quizScores));
+    } catch (e) {
+        console.log('localStorage not available');
+    }
 
     // Show results
     showQuizResults(score, total, percentage);
@@ -1226,60 +1378,57 @@ function finishQuiz() {
 
 function showQuizResults(score, total, percentage) {
     const quizBody = document.getElementById('quizBody');
+    if (!quizBody) return;
 
-    let emoji = percentage >= 90 ? '👑' : percentage >= 70 ? '🌟' : percentage >= 50 ? '👍' : '💪';
+    let emoji = percentage >= 90 ? '&#128081;' : percentage >= 70 ? '&#127775;' : percentage >= 50 ? '&#128077;' : '&#128170;';
     let message = percentage >= 90 ? 'Outstanding! You are a true Data Science Royal!' :
                   percentage >= 70 ? 'Great job! Keep mastering those libraries!' :
                   percentage >= 50 ? 'Good effort! Review the topics and try again.' :
                   'Keep learning! Review the notes and come back stronger.';
 
-    const questions = quizData[currentQuiz];
     const correct = score;
     const incorrect = total - score;
 
-    quizBody.innerHTML = `
-        <div class="quiz-result">
-            <div class="result-emoji">${emoji}</div>
-            <div class="result-score">${percentage}%</div>
-            <div class="result-message">${message}</div>
-            <div class="result-details">
-                <div class="result-stat">
-                    <div class="result-stat-value">${correct}</div>
-                    <div class="result-stat-label">Correct</div>
-                </div>
-                <div class="result-stat">
-                    <div class="result-stat-value">${incorrect}</div>
-                    <div class="result-stat-label">Incorrect</div>
-                </div>
-                <div class="result-stat">
-                    <div class="result-stat-value">${total}</div>
-                    <div class="result-stat-label">Total</div>
-                </div>
-            </div>
-            <button class="btn btn-primary" onclick="closeQuiz()">Close</button>
-        </div>
-    `;
+    quizBody.innerHTML = 
+        '<div class="quiz-result">' +
+        '<div class="result-emoji">' + emoji + '</div>' +
+        '<div class="result-score">' + percentage + '%</div>' +
+        '<div class="result-message">' + message + '</div>' +
+        '<div class="result-details">' +
+        '<div class="result-stat"><div class="result-stat-value">' + correct + '</div><div class="result-stat-label">Correct</div></div>' +
+        '<div class="result-stat"><div class="result-stat-value">' + incorrect + '</div><div class="result-stat-label">Incorrect</div></div>' +
+        '<div class="result-stat"><div class="result-stat-value">' + total + '</div><div class="result-stat-label">Total</div></div>' +
+        '</div>' +
+        '<button class="btn btn-primary" onclick="closeQuiz()">Close</button>' +
+        '</div>';
 
-    document.getElementById('nextBtn').textContent = 'Close';
-    document.getElementById('nextBtn').onclick = closeQuiz;
-    document.getElementById('prevBtn').style.display = 'none';
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+
+    if (nextBtn) {
+        nextBtn.textContent = 'Close';
+        nextBtn.onclick = closeQuiz;
+    }
+    if (prevBtn) prevBtn.style.display = 'none';
 }
 
 // ============================================
-// PROGRESS TRACKING
+// PROGRESS TRACKING - FIXED
 // ============================================
 function updateProgress() {
     const libraries = ['numpy', 'pandas', 'matplotlib', 'seaborn'];
 
     libraries.forEach(lib => {
         const score = quizScores[lib];
-        const progressEl = document.getElementById(`progress-${lib}`);
-        const statusEl = document.getElementById(`status-${lib}`);
+        const progressEl = document.getElementById('progress-' + lib);
+        const statusEl = document.getElementById('status-' + lib);
 
-        if (score) {
+        if (score && progressEl) {
             const pct = (score.score / score.total) * 100;
-            progressEl.setAttribute('stroke-dasharray', `${pct}, 100`);
-            statusEl.textContent = `${score.score}/${score.total}`;
+            progressEl.setAttribute('stroke-dasharray', pct + ', 100');
+        }
+        if (statusEl && score) {
+            statusEl.textContent = score.score + '/' + score.total;
             statusEl.classList.add('completed');
         }
     });
@@ -1292,20 +1441,19 @@ function updateResults() {
 
     libraries.forEach(lib => {
         const score = quizScores[lib];
-        const barEl = document.getElementById(`bar-${lib}`);
-        const scoreEl = document.getElementById(`score-${lib}`);
-        const achEl = document.getElementById(`ach-${lib}`);
+        const barEl = document.getElementById('bar-' + lib);
+        const scoreEl = document.getElementById('score-' + lib);
+        const achEl = document.getElementById('ach-' + lib);
 
         if (score) {
             const pct = (score.score / score.total) * 100;
-            barEl.style.width = pct + '%';
-            scoreEl.textContent = `${score.score}/${score.total}`;
+            if (barEl) barEl.style.width = pct + '%';
+            if (scoreEl) scoreEl.textContent = score.score + '/' + score.total;
 
             totalScore += score.score;
             totalQuestions += score.total;
 
-            // Unlock achievement if score >= 70%
-            if (pct >= 70) {
+            if (pct >= 70 && achEl) {
                 achEl.classList.add('unlocked');
                 achEl.setAttribute('data-locked', 'false');
             }
@@ -1318,34 +1466,40 @@ function updateResults() {
         const barEl = document.getElementById('bar-final');
         const scoreEl = document.getElementById('score-final');
         const pct = (finalScore.score / finalScore.total) * 100;
-        barEl.style.width = pct + '%';
-        scoreEl.textContent = `${finalScore.score}/${finalScore.total}`;
+        if (barEl) barEl.style.width = pct + '%';
+        if (scoreEl) scoreEl.textContent = finalScore.score + '/' + finalScore.total;
         totalScore += finalScore.score;
         totalQuestions += finalScore.total;
 
-        if (pct >= 70) {
-            document.getElementById('ach-final').classList.add('unlocked');
-        }
-        if (pct === 100) {
-            document.getElementById('ach-perfect').classList.add('unlocked');
-        }
+        const achFinal = document.getElementById('ach-final');
+        if (achFinal && pct >= 70) achFinal.classList.add('unlocked');
+
+        const achPerfect = document.getElementById('ach-perfect');
+        if (achPerfect && pct === 100) achPerfect.classList.add('unlocked');
     }
 
     // Overall
     if (totalQuestions > 0) {
         const overallPct = Math.round((totalScore / totalQuestions) * 100);
-        document.getElementById('overallPercent').textContent = overallPct + '%';
-        document.getElementById('overallText').textContent = 
-            overallPct >= 80 ? 'Excellent mastery!' :
-            overallPct >= 60 ? 'Good progress!' : 'Keep learning!';
+        const overallPercent = document.getElementById('overallPercent');
+        const overallText = document.getElementById('overallText');
+
+        if (overallPercent) overallPercent.textContent = overallPct + '%';
+        if (overallText) {
+            overallText.textContent = 
+                overallPct >= 80 ? 'Excellent mastery!' :
+                overallPct >= 60 ? 'Good progress!' : 'Keep learning!';
+        }
 
         // Animate circle
         const circle = document.getElementById('overallCircle');
-        const circumference = 2 * Math.PI * 45;
-        const offset = circumference - (overallPct / 100) * circumference;
-        setTimeout(() => {
-            circle.style.strokeDashoffset = offset;
-        }, 500);
+        if (circle) {
+            const circumference = 2 * Math.PI * 45;
+            const offset = circumference - (overallPct / 100) * circumference;
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 500);
+        }
     }
 }
 
@@ -1354,7 +1508,7 @@ function checkFinalUnlock() {
     const finalBtn = document.getElementById('btn-final');
     const finalStatus = document.getElementById('status-final');
 
-    if (unlocked) {
+    if (finalBtn && finalStatus && unlocked) {
         finalBtn.disabled = false;
         finalBtn.textContent = 'Start Final Challenge';
         finalStatus.textContent = 'Unlocked!';
@@ -1371,28 +1525,16 @@ function isFinalUnlocked() {
 }
 
 // ============================================
-// SHAKE ANIMATION FOR CSS
+// UTILITY
 // ============================================
-const shakeStyle = document.createElement('style');
-shakeStyle.textContent = `
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-10px); }
-        75% { transform: translateX(10px); }
-    }
-`;
-document.head.appendChild(shakeStyle);
-
-// Add SVG gradient definition for results circle
-const svgDefs = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-svgDefs.setAttribute('width', '0');
-svgDefs.setAttribute('height', '0');
-svgDefs.innerHTML = `
-    <defs>
-        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#d4af37"/>
-            <stop offset="100%" style="stop-color:#8b5cf6"/>
-        </linearGradient>
-    </defs>
-`;
-document.body.appendChild(svgDefs);
+function addShakeStyle() {
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    `;
+    document.head.appendChild(style);
+}
